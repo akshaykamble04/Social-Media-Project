@@ -6,10 +6,16 @@ import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
-import NotificationsOutlinedicon from "@mui/icons-material/NotificationsOutlined"
+import NotificationsOutlinedicon from "@mui/icons-material/NotificationsOutlined";
+import WbSunnyOutlinedIcon from "@mui/icons-material/WbSunnyOutlined";
+import { DarkModeContext } from "../../context/darkModeContext";
+import { useContext } from "react";
 
 
 const Navbar = () => {
+
+  const { toggle, darkMode } = useContext(DarkModeContext);
+
   return (
     <div className="navbar">
       <div className="left">
@@ -17,7 +23,10 @@ const Navbar = () => {
           <span>ConnectSphere</span>
         </Link>
         <HomeOutlinedIcon />
-        <DarkModeOutlinedIcon />
+        {darkMode ?
+          <WbSunnyOutlinedIcon onClick={toggle} />
+          :
+          <DarkModeOutlinedIcon onClick={toggle} />}
         <GridViewOutlinedIcon />
         <div className="search">
           <SearchOutlinedIcon />
