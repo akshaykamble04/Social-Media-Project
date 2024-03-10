@@ -12,16 +12,21 @@ import Gaming from "../../assets/video.png";
 import Fund from "../../assets/fund.png";
 import Courses from "../../assets/courses.png";
 import Tutorials from "../../assets/tutorial.png"
+import { useContext } from "react";
+import { AuthContext } from "../../context/authContext";
 
 const LeftBar = () => {
+
+  const { currentUser } = useContext(AuthContext);
+
   return (
     <div className="leftBar">
       <div className="container">
         <div className="menu">
           <div className="user">
-            <img src="https://lh3.googleusercontent.com/a/ACg8ocITKKVSH5wTImuW2RL0d_Pwfuq5xVPDSKCl0T1z437rir0=s360-c-no"
+            <img src={currentUser.profilePic}
               alt="" />
-            <span>ak</span>
+            <span>{currentUser.name}</span>
           </div>
           <div className="item">
             <img src={Friends} alt="" />

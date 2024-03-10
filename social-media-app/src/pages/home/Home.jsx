@@ -1,70 +1,12 @@
+import Posts from "../../components/posts/Posts"
+import Stories from "../../components/stories/Stories"
 import "./home.scss"
 
 const Home = () => {
     return (
         <div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div> <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div> <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div> <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div>
-            <div className="home">Home</div> <div className="home">Home</div>
-            <div className="home">Home</div>
-
-
+            <Stories />
+            <Posts />
         </div>
 
 
