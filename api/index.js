@@ -9,11 +9,11 @@ const app = Express();
 // Middlewares
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Credentials", true)
-    next();
-});
+    next()
+})
 app.use(Express.json());
 app.use(cors({
-    origin: "http://localhost:8081",
+    origin: "http://localhost:3000",
 }));
 app.use(cookieParser()); // Corrected: Call the function
 
