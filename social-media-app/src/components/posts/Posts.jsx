@@ -7,8 +7,6 @@ import {
 
 const Posts = ({ userId }) => {
 
-
-
     const { isLoading, error, data } = useQuery({
         queryKey: ["posts"],
         queryFn: () =>
@@ -16,6 +14,7 @@ const Posts = ({ userId }) => {
                 return res.data;
             })
     });
+
     console.log(data);
 
     return (

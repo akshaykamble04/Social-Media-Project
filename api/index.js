@@ -3,6 +3,7 @@
 import Express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import multer from "multer";
 
 const app = Express();
 
@@ -15,7 +16,23 @@ app.use(Express.json());
 app.use(cors({
     origin: "http://localhost:3000",
 }));
-app.use(cookieParser()); // Corrected: Call the function
+app.use(cookieParser());
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, '../social-media-app/public/upload')
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + file.originalname);
+    },
+});
+
+const upload = multer({ storage: storage });
+
+app.post("/api/upload", upload.single("file"), (req, res) => {
+    const file = req.file;
+    res.status(200).json(file.filename);
+});
 
 // Import routes
 import authRoutes from "./routes/auth.js";

@@ -6,15 +6,30 @@ import FavouriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
 import TextsmsOutlinedIcon from "@mui/icons-material/TextsmsOutlined";
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import Comments from "../comments/Comments";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import moment from "moment";
+import { useQuery } from '@tanstack/react-query';
+import { makeRequest } from "../../axios";
+import { AuthContext } from "../../context/authContext";
+
 
 
 const Post = ({ post }) => {
 
     const [commentOpen, setCommentOpen] = useState(false);
 
-    //temp
-    const liked = false;
+    const { currentUser } = useContext(AuthContext);
+
+    const { isLoading, error, data } = useQuery({
+        queryKey: ["likes", post.id],
+        queryFn: () =>
+            makeRequest.get("/likes?postId=" + post.id).then((res) => {
+                return res.data;
+            })
+    });
+
+    console.log(data);
+
 
     return (
         <div className='post'>
@@ -27,19 +42,23 @@ const Post = ({ post }) => {
                                 style={{ textDecoration: "none", color: "inherit" }}>
                                 <span className="name">{post.name}</span>
                             </Link>
-                            <span className="date">1 min ago</span>
+                            <span className="date">{moment(post.createdAt).fromNow()}</span>
                         </div>
                     </div>
                     <MoreHorizIcon />
                 </div>
                 <div className="content">
                     <p>{post.desc}</p>
-                    <img src={post.img} alt="" />
+                    <img src={"./upload/" + post.img} alt="" />
                 </div>
                 <div className="info">
                     <div className="item">
-                        {liked ? <FavouriteOutlinedIcon /> : <FavouriteBorderOutlinedIcon />}
-                        11 likes
+                        {data.includes(currentUser.id) ?
+                            <FavouriteOutlinedIcon style={{ color: "red" }} />
+                            :
+                            <FavouriteBorderOutlinedIcon />
+                        }
+                        {data.length} likes
                     </div>
                     <div className="item" onClick={() => setCommentOpen(!commentOpen)}>
                         <TextsmsOutlinedIcon />
@@ -51,7 +70,7 @@ const Post = ({ post }) => {
                     </div>
 
                 </div>
-                {commentOpen && <Comments />}
+                {commentOpen && <Comments postId={post.id} />}
 
             </div>
         </div>
