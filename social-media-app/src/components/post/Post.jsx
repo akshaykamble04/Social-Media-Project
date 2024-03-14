@@ -8,9 +8,10 @@ import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import Comments from "../comments/Comments";
 import { useContext, useState } from "react";
 import moment from "moment";
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { makeRequest } from "../../axios";
 import { AuthContext } from "../../context/authContext";
+
 
 
 
@@ -28,7 +29,27 @@ const Post = ({ post }) => {
             })
     });
 
+    console.log(error);
+
     console.log(data);
+
+    const queryClient = useQueryClient();
+
+    // Mutations
+    const mutation = useMutation({
+        mutationFn: (liked) => {
+            if (liked) return makeRequest.delete("/likes?postId=" + post.id);
+            return makeRequest.post("/likes", { postId: post.id });
+        },
+        onSuccess: () => {
+            // Invalidate and refetch
+            queryClient.invalidateQueries({ queryKey: ["likes"] })
+        },
+    });
+
+    const handleLike = () => {
+        mutation.mutate(data.includes(currentUser.id));
+    }
 
 
     return (
@@ -53,11 +74,11 @@ const Post = ({ post }) => {
                 </div>
                 <div className="info">
                     <div className="item">
-                        {data.includes(currentUser.id) ?
-                            <FavouriteOutlinedIcon style={{ color: "red" }} />
-                            :
-                            <FavouriteBorderOutlinedIcon />
-                        }
+                        {isLoading ? "loading" : data.includes(currentUser.id) ? (
+                            <FavouriteOutlinedIcon style={{ color: "red" }} onClick={handleLike} />
+                        ) : (
+                            <FavouriteBorderOutlinedIcon onClick={handleLike} />
+                        )}
                         {data.length} likes
                     </div>
                     <div className="item" onClick={() => setCommentOpen(!commentOpen)}>
