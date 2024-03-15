@@ -9,56 +9,122 @@ import LanguageIcon from "@mui/icons-material/Language";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Posts from "../../components/posts/Posts";
+import { useLocation } from "react-router-dom";
+import { useContext, useState } from "react";
+import { AuthContext } from "../../context/authContext";
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { makeRequest } from "../../axios";
+import Update from "../../components/update/Update";
 
 const Profile = () => {
+
+    const [openUpdate, setOpenUpdate] = useState(false);
+
+    const { currentUser } = useContext(AuthContext);
+
+    const userId = parseInt(useLocation().pathname.split("/")[2]);
+
+    const { isLoading, data } = useQuery({
+        queryKey: ["user"],
+        queryFn: () =>
+            makeRequest.get("/users/find/" + userId).then((res) => {
+                return res.data;
+            })
+    });
+
+    const { isLoading: rIsLoading, data: relationshipData } = useQuery({
+        queryKey: ["relationship"],
+        queryFn: () =>
+            makeRequest.get("/relationships?followedUserId=" + userId).then((res) => {
+                return res.data;
+            })
+    });
+
+    const queryClient = useQueryClient();
+
+    // Mutations
+    const mutation = useMutation({
+        mutationFn: (following) => {
+            if (following) return makeRequest.delete("/relationships?userId=" + userId);
+            return makeRequest.post("/relationships", { userId });
+        },
+        onSuccess: () => {
+            // Invalidate and refetch
+            queryClient.invalidateQueries({ queryKey: ["relationship"] })
+        },
+    });
+
+    const handleFollow = () => {
+        mutation.mutate(relationshipData.includes(currentUser.id));
+    }
+
+
     return (
         <div className="profile">
-            <div className="images">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSuiKNNDIOg79NG6f5-7V0jKg0VArh8VhaKMfKucS964QRiMJGOnjsoXCpOSLKQJIgHac&usqp=CAU" alt="" className="cover" />
-                <img src="https://lh3.googleusercontent.com/ogw/AF2bZyiJ-8C7qIzKEkoNom0Uq2vQUCPrnvAslPTzYayE7A=s32-c-mo" alt="" className="profilePic" />
-            </div>
-            <div className="profileContainer">
-                <div className="userInfo">
-                    <div className="left">
-                        <a href="https://www.facebook.com/">
-                            <FacebookTwoToneIcon fontSize="large" />
-                        </a>
-                        <a href="https://www.instagram.com/">
-                            <InstagramIcon fontSize="large" />
-                        </a>
-                        <a href="https://twitter.com/?lang=en">
-                            <TwitterIcon fontSize="large" />
-                        </a>
-                        <a href="https://in.linkedin.com/">
-                            <LinkedInIcon fontSize="large" />
-                        </a>
-                        <a href="https://in.pinterest.com/">
-                            <PinterestIcon fontSize="large" />
-                        </a>
+            {isLoading
+                ?
+                "loading"
+                :
+                <>
+                    <div className="images">
+                        <img src={data?.coverPic}
+                            alt=""
+                            className="cover" />
+                        <img src={data?.profilePic}
+                            alt=""
+                            className="profilePic" />
                     </div>
-                    <div className="center">
-                        <span>ak</span>
-                        <div className="info">
-                            <div className="item">
-                                <PlaceIcon />
-                                <span>India</span>
+                    <div className="profileContainer">
+                        <div className="userInfo">
+                            <div className="left">
+                                <a href="https://www.facebook.com/">
+                                    <FacebookTwoToneIcon fontSize="large" />
+                                </a>
+                                <a href="https://www.instagram.com/">
+                                    <InstagramIcon fontSize="large" />
+                                </a>
+                                <a href="https://twitter.com/?lang=en">
+                                    <TwitterIcon fontSize="large" />
+                                </a>
+                                <a href="https://in.linkedin.com/">
+                                    <LinkedInIcon fontSize="large" />
+                                </a>
+                                <a href="https://in.pinterest.com/">
+                                    <PinterestIcon fontSize="large" />
+                                </a>
                             </div>
-                            <div className="item">
-                                <LanguageIcon />
-                                <span>ak.com</span>
+                            <div className="center">
+                                <span>{data?.name}</span>
+                                <div className="info">
+                                    <div className="item">
+                                        <PlaceIcon />
+                                        <span>{data?.city}</span>
+                                    </div>
+                                    <div className="item">
+                                        <LanguageIcon />
+                                        <span>{data?.website}</span>
+                                    </div>
+                                </div>
+                                {rIsLoading ? "loading" : userId === currentUser.id ? (
+                                    <button>update</button>
+                                ) : (
+                                    <button onClick={handleFollow}>{
+                                        relationshipData.includes(currentUser.id)
+                                            ? "Following"
+                                            : "Follow"
+                                    }</button>)}
+                            </div>
+                            <div className="right">
+                                <EmailOutlinedIcon />
+                                <MoreVertIcon />
                             </div>
                         </div>
-                        <button>follow</button>
+                        <Posts userId={userId} />
                     </div>
-                    <div className="right">
-                        <EmailOutlinedIcon />
-                        <MoreVertIcon />
-                    </div>
-                </div>
-                <Posts />
-            </div>
-        </div>
-    )
+                </>}
+            <Update />
+        </div >
+    );
 }
 
 export default Profile

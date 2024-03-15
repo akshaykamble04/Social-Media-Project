@@ -79,7 +79,7 @@ const Post = ({ post }) => {
                         ) : (
                             <FavouriteBorderOutlinedIcon onClick={handleLike} />
                         )}
-                        {data.length} likes
+                        {data?.length} likes
                     </div>
                     <div className="item" onClick={() => setCommentOpen(!commentOpen)}>
                         <TextsmsOutlinedIcon />

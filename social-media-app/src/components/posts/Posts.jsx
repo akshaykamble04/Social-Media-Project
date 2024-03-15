@@ -10,7 +10,7 @@ const Posts = ({ userId }) => {
     const { isLoading, error, data } = useQuery({
         queryKey: ["posts"],
         queryFn: () =>
-            makeRequest.get("/posts").then((res) => {
+            makeRequest.get("/posts?userId=" + userId).then((res) => {
                 return res.data;
             })
     });
