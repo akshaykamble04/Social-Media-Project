@@ -67,10 +67,10 @@ const Profile = () => {
                 :
                 <>
                     <div className="images">
-                        <img src={data?.coverPic}
+                        <img src={"/upload/" + data?.coverPic}
                             alt=""
                             className="cover" />
-                        <img src={data?.profilePic}
+                        <img src={"/upload/" + data?.profilePic}
                             alt=""
                             className="profilePic" />
                     </div>
@@ -106,7 +106,7 @@ const Profile = () => {
                                     </div>
                                 </div>
                                 {rIsLoading ? "loading" : userId === currentUser.id ? (
-                                    <button>update</button>
+                                    <button onClick={() => setOpenUpdate(true)}>update</button>
                                 ) : (
                                     <button onClick={handleFollow}>{
                                         relationshipData.includes(currentUser.id)
@@ -122,7 +122,7 @@ const Profile = () => {
                         <Posts userId={userId} />
                     </div>
                 </>}
-            <Update />
+            {openUpdate && <Update setOpenUpdate={setOpenUpdate} user={data} />}
         </div >
     );
 }
